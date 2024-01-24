@@ -1,0 +1,3 @@
+ Set Mode for DDTO HUD:
+ "true" for pixel,
+ "false" for normal

@@ -1,0 +1,31 @@
+{
+	"storyName": "ddto",
+	"difficulties": "settings",
+	"hideFreeplay": false,
+	"weekBackground": "stage",
+	"weekBefore": "tutorial",
+	"freeplayColor": [
+		146,
+		113,
+		253
+	],
+	"startUnlocked": true,
+	"hideStoryMode": true,
+	"songs": [
+		[
+			"ddto",
+			"bf",
+			[
+				115,
+				233,
+				95
+			]
+		]
+	],
+	"weekCharacters": [
+		"dad",
+		"bf",
+		"gf"
+	],
+	"weekName": "settings"
+}

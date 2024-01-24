@@ -1,0 +1,7 @@
+{
+	"name": "DDTO+ Hud",
+	"description": "Just Monika",
+	"restart":true,
+	"runsGlobally": true,
+	"color": [255, 189, 224]
+}
