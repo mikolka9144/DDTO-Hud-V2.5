@@ -1,5 +1,6 @@
 -- THANK YOU Jaldabo#2709 AND Dsfan2#6218 FOR HELPING ME WITH THIS
 -- Some edits by superpowers04#3887
+-- NOTE: If you want to mess with og credits script.. Here it is:
 
 -- Config --
 local iconPath = 'icons/' -- Path of the icons in the 'mods/images/'
@@ -7,9 +8,9 @@ local iconPrefix = '' -- Prefix before the credit icon name
 local ShowCredits = true -- Do you want to show the credits before a song? [true/false]
 
 -- Default Config --
-local defaultShow = true -- Should the songName show even if there's none specified? [true/false]
+local defaultShow = false -- Should the songName show even if there's none specified? [true/false]
 local defaultTimer = 4 -- Default timer before the credits fade out and with "defaultShow" is enabled
-local defaultArtist = 'Unknown Composer' -- Default artist name if there's no credits data
+local defaultArtist = 'Monika' -- Default artist name if there's no credits data
 local defaultIcon = 'mic' -- Default icon if there's no credits data
 local defaultIconPixel = 'mic-pixel' -- Default pixel icon if there's no credits data and with "isPixelStage" enabled
 

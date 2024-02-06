@@ -1,18 +1,19 @@
-local laneUnderlay = true                  --  [true/false]
 local laneTransparency = 0.4               --  Max 1
-
 local strumReflect = false
 
+function onCreate()
+  if not getData('ddtoUnderlay', false) then
+    close("No underlay")
+  end
+end
 function onCreatePost()
     loadPresets()
-    if laneUnderlay then
-        createUnderlay(false)
-        createUnderlay(true)
-      end
+    createUnderlay(false)
+    createUnderlay(true)
 end
 
 function onUpdatePost()
-    if laneUnderlay then moveUnderlays() end
+    moveUnderlays()
 end
 
 ---------
@@ -67,7 +68,6 @@ function moveUnderlays()
 function loadPresets()
     initSaveData('DdtoV2', 'psychengine/mikolka9144')
     strumReflect = getData('strumReflect', false)
-    laneUnderlay = getData('ddtoUnderlay', laneUnderlay)
     laneTransparency = getData('ddtoUnderlayAlpha', laneTransparency)
 
   end

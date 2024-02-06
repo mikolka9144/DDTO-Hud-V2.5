@@ -1,5 +1,4 @@
--- OPTIONS --
-local hitSound = true      
+-- OPTIONS --  
 local judgeHitSound = true 
 local judgeCount = 1    
 local hitSoundVolume = 0.9 
@@ -8,6 +7,10 @@ local hitSoundVolume = 0.9
 local enemyHit = false
 
 function onCreate()
+  if not getData("hitSound",true) then
+    close("No hitsounds")
+    return
+  end
   precacheSound('hitsound/snap')
   precacheSound('hitsound/perfect')
   precacheSound('hitsound/great')
@@ -20,20 +23,20 @@ function onCreatePost()
 end
 function goodNoteHit(membersIndex, noteData, noteType, isSustainNote)
   if not enemyHit  then
-    checkNote(membersIndex, noteData, noteType, isSustainNote)
+    noteHit(membersIndex, noteData, noteType, isSustainNote)
   end
 end
 
 function opponentNoteHit(membersIndex, noteData, noteType, isSustainNote)
   if enemyHit then
-    checkNote(membersIndex, noteData, noteType, isSustainNote)
+    noteHit(membersIndex, noteData, noteType, isSustainNote)
   end
 end
 
 ----------
-function checkNote(noteID, noteData, noteType, isSustainNote)
+function noteHit(noteID, noteData, noteType, isSustainNote)
   rating = getPropertyFromGroup('notes', noteID, 'rating') -- TODO
-  if not isSustainNote and hitSound then
+  if not isSustainNote then
     if not judgeHitSound then
       playChord("noteHit")
     elseif rating == 'sick' then
@@ -77,11 +80,9 @@ end
 function importSettings()
   initSaveData('DdtoV2', 'psychengine/mikolka9144')
   OpponentHasSplash = getData("OpponentHasSplash",false)
-  hitSound = getData("hitSound",true)      
-  judgeHitSound = getData("judgeHitSound",true) 
-  judgeCount = getData("judgeCount",0)      
-  hitSoundVolume = getData("hitSoundVolume",0.9) 
-  if getData("funcReflect","none") then
-    enemyHit = true
-  end
+  judgeHitSound = getData("judgeHitSound",judgeHitSound)
+  judgeCount = getData("judgeCount",0)
+  hitSoundVolume = getData("hitSoundVolume",0.9)
+  enemyHit = getData("funcReflect",false)
+
 end

@@ -1,20 +1,20 @@
+isNewPsych = false
+BG = ""
+
 function onCreate()
     addHaxeLibrary("Std", '')
-    if version:find('0.7') then
-        close("Psych 0.7 detected")
-    end
-
 end
 
 function onCreatePost()
+    isNewPsych = version:find('0.7')
+    BG = isNewPsych and "timeBar" or "timeBarBG"
+    runHaxeCode('game.' .. BG .. '.kill();')
+    debugPrint(BG)
     makeTimeBarBG()
-
-    --setObjectOrder('timeBarBack', getObjectOrder('timeBarBG') + 1)
-    setObjectOrder('timeBar', getObjectOrder('timeBarBack') + 1)
-    setObjectOrder('timeTxt', getObjectOrder('timeBar') + 1)
-    
-    runHaxeCode(" game.timeBarBG.kill(); ")
-    --setProperty("timeBar.y", getProperty("timeBarBack.y"))
+    if not isNewPsych then
+        setObjectOrder('timeBar', getObjectOrder('timeBarBack') + 1)
+        setObjectOrder('timeTxt', getObjectOrder('timeBar') + 1)
+    end
 end
 
 function onUpdatePost()
@@ -24,7 +24,7 @@ function onUpdatePost()
 end
 
 function onEvent(eventName, value1, value2)
-    if eventName == "Refresh NewBar" then
+    if eventName == "Refresh NewBar" and not isNewPsych then
         dad = 'dad'
         boyfriend = 'boyfriend'
         if value1 == "true" then
@@ -48,8 +48,8 @@ function makeTimeBarBG()
     makeLuaSprite('timeBarBack', 'timeBar')
     setObjectCamera('timeBarBack', 'hud')
     setProperty('timeBarBack.alpha', 0)
-    setProperty('timeBarBack.x', getProperty('timeBarBG.x'))
-    setProperty('timeBarBack.y', getProperty('timeBarBG.y'))
+    setProperty('timeBarBack.x', getProperty(BG..'.x'))
+    setProperty('timeBarBack.y', getProperty(BG..'.y'))
     addLuaSprite('timeBarBack')
 end
 
