@@ -1,6 +1,7 @@
 
 local customScoreBarText = false
 local npsEnabled = false
+local funcReflect = false
 --------------------------
 local nps = 0
 local npsMax = 0
@@ -10,11 +11,19 @@ function getData(value)
   return getDataFromSave('DdtoV2', value)
 end
 ---
-function onCreatePost()
+function onCreate()
   initSaveData('DdtoV2', 'psychengine/mikolka9144')
-  customScoreBarText = getData('customScoreBarText')
+  if not getData('customScoreBarText') then
+    close("No SCORE")
+    return
+  end
   npsEnabled = getData('npsEnabled')
 end
+
+function onCreatePost()
+  funcReflect = getData('funcReflect', false)
+end
+
 function onUpdate()
     if customScoreBarText then calculateScore() end
 
@@ -31,9 +40,8 @@ function onUpdate()
       end
 end
 
-
-function goodNoteHit(membersIndex, noteData, noteType, isSustainNote)
-    if not isSustainNote then nps = nps + 1 end
+function NoteHit()
+     nps = nps + 1
 end
 
 function onTimerCompleted(tag, loops, loopsLeft)
@@ -120,4 +128,10 @@ function GetFCRatingName()
     x = x * n
     if x >= 0 then x = math.floor(x + 0.5) else x = math.ceil(x - 0.5) end
     return x / n
+  end
+  function opponentNoteHit(id, noteData, noteType, isSustainNote) 
+    if funcReflect and not isSustainNote then noteHit() end end
+  
+  function goodNoteHit(noteID, noteData, noteType, isSustainNote)
+    if not funcReflect and not isSustainNote then noteHit() end
   end

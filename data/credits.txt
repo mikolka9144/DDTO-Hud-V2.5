@@ -12,10 +12,6 @@ Dsfan2::blank::Fixed Icon in Credit Script::https://gamebanana.com/members/18376
 Sentive::blank::Lane Overlay Script::https://www.youtube.com/channel/UCTIaOCfQBAnY3vq2nzgYK0Q::0xFFffffff
 Aaron_R::blank::Fixed Gradient Timebar::https://gamebanana.com/members/2121879::0xFFffffff
 
-Complex Mirror implementations
-Shadow Mario::blank::Created base script for 0.7 complex mirror mode::https://gamebanana.com/mods/458072::0xFFffffff
-Super_Hugo::blank::Creaded base script for 0.6.3 complex mirror mode::https://gamebanana.com/mods/429702::0xFFffffff
-
 Special Thanks
 Bombastic Tom::blank:: Creator of original setting script (used for settings)::https://gamebanana.com/mods/358754::0xFFffffff
 Team TBD::blank::Without them and their amazing mod, this script wouldn't exist :)::https://gamebanana.com/studios/36659::0xFFffffff

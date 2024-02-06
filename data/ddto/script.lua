@@ -68,7 +68,8 @@ function onCreate()
     precacheMusic('options')
     playMusic("options", 0.9, true)
     options = {
-        {"Do you want to play as the opponent? [none/simple/complex]","Mirror mode", "mirror", "string", "none", {"none","simple","complex"}},
+        {"Allows you to play as the opponent","Mirror mode", "user_anyMirror", "bool",false},
+        {"Should internal mirror scipt be used?","Built-in mirror script", "user_internalMirror", "bool",true},
         {"","DDTO HUD SETTINGS", "xxxxxac", "none"},
         {"Do you want to enable the judgement counter?","Judgement counter", "ddtoNoteCounter", "bool",true},
         {"Do you want to enable the lane underlay?","Lane Underlay", "ddtoUnderlay", "bool",true},
@@ -86,7 +87,11 @@ function onCreate()
         {"","DDTO BAR SETTINGS", "xxxxxac", "none"},
         {"Do you want to replace score text with one from DDTO?","DDTO score", "customScoreBarText", "bool",true},
         {"Do you want to enable NPS?","NPS counter", "npsEnabled", "bool",true},
-        {"","MISC","xcxcxcz","none"},
+        {"","EXTERNAL MIRROR CONFIG","xcxcxcz","none"},
+        {"Uses enemy callbacks for player enevts ","Reverse function calls","user_funcReflect","bool",false},
+        {"Use enemy strum for player context","Reverse player strum","user_strumlineReflect","bool",false},
+        {"Assumes player is treated as opponent in HP bar","Reverse HP bar","user_hpReflect","bool",false},
+        {"","MISC","xszcxcxcz","none"},
         {"Do you want to enable coolGameplay?? lol ","COOL GAMEPLAY","coolGameplay","bool",false},
         {"Do you want to enable gfCountdown? (if your gf has one)","GF Countdown","gfCountdown","bool",false},
         {"Do you have skill issue in coding?","DEBUG", "debug", "bool",false}
