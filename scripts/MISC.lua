@@ -24,5 +24,7 @@ function makeGameplayCool()
 end
 
 function getData(value, fallback)
-    return getDataFromSave('DdtoV2', value, fallback)
-end
+    local item = getDataFromSave('DdtoV2', value, fallback)
+    if(item == nil) then return fallback end
+    return item
+  end

@@ -1,13 +1,13 @@
--- OPTIONS --  
-local judgeHitSound = true 
-local judgeCount = 1    
-local hitSoundVolume = 0.9 
+-- OPTIONS --
+local judgeHitSound = true
+local judgeMin = 1
+local hitSoundVolume = 0.9
 
 -- DO NOT TOUCH --
 local enemyHit = false
 
 function onCreate()
-  if not getData("hitSound",true) then
+  if not getData("hitSound", true) then
     close("No hitsounds")
     return
   end
@@ -21,8 +21,9 @@ end
 function onCreatePost()
   importSettings()
 end
+
 function goodNoteHit(membersIndex, noteData, noteType, isSustainNote)
-  if not enemyHit  then
+  if not enemyHit then
     noteHit(membersIndex, noteData, noteType, isSustainNote)
   end
 end
@@ -55,34 +56,36 @@ end
 
 function playChord(rating)
   if rating == "noteHit" then
-    playSnd('snap','chord')
-  elseif rating == 'doki' and judgeCount > 0 then
-    playSnd('perfect','chord')
-  elseif rating == 'good' and judgeCount > 1 then
-    playSnd('great','chord')
-  elseif rating == 'ok' and judgeCount > 2 then
-    playSnd('good','chord')
-  elseif rating == "no" and judgeCount > 3 then
-    playSnd('tap',"bad")
-  elseif rating == "invalid"then
-    playSnd('snap',"chord")
+    playSnd('snap', 'chord')
+  elseif rating == 'doki' then
+    playSnd('perfect', 'chord')
+  elseif rating == 'good' and judgeMin ~= "Sick" then
+    playSnd('great', 'chord')
+  elseif rating == 'ok' and judgeMin ~= "Good" and judgeMin ~= "Sick" then
+    playSnd('good', 'chord')
+  elseif rating == "no" and judgeMin == "Shit" then
+    playSnd('tap', "bad")
+  elseif rating == "invalid" then
+    playSnd('snap', "chord")
   end
-  
 end
-function playSnd(name,type)
+
+function playSnd(name, type)
   stopSound(type)
   playSound('hitsound/' .. name, hitSoundVolume, type)
 end
 
 function getData(value, fallback)
-  return getDataFromSave('DdtoV2', value, fallback)
+  local item = getDataFromSave('DdtoV2', value, fallback)
+  if (item == nil) then return fallback end
+  return item
 end
+
 function importSettings()
   initSaveData('DdtoV2', 'psychengine/mikolka9144')
-  OpponentHasSplash = getData("OpponentHasSplash",false)
-  judgeHitSound = getData("judgeHitSound",judgeHitSound)
-  judgeCount = getData("judgeCount",0)
-  hitSoundVolume = getData("hitSoundVolume",0.9)
-  enemyHit = getData("funcReflect",false)
-
+  OpponentHasSplash = getData("OpponentHasSplash", false)
+  judgeHitSound = getData("judgeHitSound", judgeHitSound)
+  judgeMin = getData("judgeMinimum", "Shit")
+  hitSoundVolume = getData("hitSoundVolume", 0.9)
+  enemyHit = getData("funcReflect", false)
 end

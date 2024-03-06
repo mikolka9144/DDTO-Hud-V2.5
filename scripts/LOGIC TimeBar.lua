@@ -36,7 +36,7 @@ function onEvent(eventName, value1, value2)
 
         daCode = [[
         game.timeBar.createGradientBar([0x0], [Std.parseInt('0xFF' + ']] ..
-        colorShitBF .. [['), Std.parseInt('0xFF' + ']] .. colorShitDad .. [[')]);
+            colorShitBF .. [['), Std.parseInt('0xFF' + ']] .. colorShitDad .. [[')]);
         ]]
         runHaxeCode(daCode)
     end
@@ -48,8 +48,8 @@ function makeTimeBarBG()
     makeLuaSprite('timeBarBack', 'timeBar')
     setObjectCamera('timeBarBack', 'hud')
     setProperty('timeBarBack.alpha', 0)
-    setProperty('timeBarBack.x', getProperty(BG..'.x'))
-    setProperty('timeBarBack.y', getProperty(BG..'.y'))
+    setProperty('timeBarBack.x', getProperty(BG .. '.x'))
+    setProperty('timeBarBack.y', getProperty(BG .. '.y'))
     addLuaSprite('timeBarBack')
 end
 
