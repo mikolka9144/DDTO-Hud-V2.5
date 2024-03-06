@@ -14,6 +14,7 @@ function onCreate()
     end
     createJudgementCounter()
 end
+
 function onCreatePost()
     funcReflect = getData('funcReflect', false)
 end
@@ -29,13 +30,14 @@ function opponentNoteHit(id, noteData, noteType, isSustainNote)
     if funcReflect and not isSustainNote then noteHit(id) end
 end
 
-  function goodNoteHit(noteID, noteData, noteType, isSustainNote)
+function goodNoteHit(noteID, noteData, noteType, isSustainNote)
     if not funcReflect and not isSustainNote then noteHit(noteID) end
-  end
+end
 
-  function noteHit(noteID)
+function noteHit(noteID)
     if EarlyLate then calculateHitTime(noteID) end
-  end
+end
+
 function onUpdatePost()
     setProperty("judgementCounter.alpha", getProperty("timeTxt.alpha"), false)
 end
@@ -54,15 +56,15 @@ end
 function calculateHitTime(noteID)
     local msTime = (getSongPosition() - getPropertyFromGroup('notes', noteID, 'strumTime')) - RATING_OFFSET
     local rating = getPropertyFromGroup('notes', noteID, 'rating')
-  
+
     if rating ~= "sick" then
-      if msTime < 0
-      then
-        early = early + 1
-      else
-        late = late + 1
-      end
-    end 
+        if msTime < 0
+        then
+            early = early + 1
+        else
+            late = late + 1
+        end
+    end
 end
 
 function setMaxCombo()
@@ -100,15 +102,16 @@ function configureExternalVars()
     local isNewPsych = version:find('0.7')
 
     JudgementNameTable = isNewPsych
-    and { 'ratingsData[0].hits', 'ratingsData[1].hits', 'ratingsData[2].hits', 'ratingsData[3].hits' }
-    or { 'sicks', 'goods', 'bads', 'shits' }
+        and { 'ratingsData[0].hits', 'ratingsData[1].hits', 'ratingsData[2].hits', 'ratingsData[3].hits' }
+        or { 'sicks', 'goods', 'bads', 'shits' }
 
     RATING_OFFSET = isNewPsych
-    and getPropertyFromClass('backend.ClientPrefs', 'data.ratingOffset')
-    or getPropertyFromClass('ClientPrefs', 'ratingOffset')
-    
+        and getPropertyFromClass('backend.ClientPrefs', 'data.ratingOffset')
+        or getPropertyFromClass('ClientPrefs', 'ratingOffset')
 end
 
 function getData(value, fallback)
-    return getDataFromSave('DdtoV2', value, fallback)
+    local item = getDataFromSave('DdtoV2', value, fallback)
+    if (item == nil) then return fallback end
+    return item
 end

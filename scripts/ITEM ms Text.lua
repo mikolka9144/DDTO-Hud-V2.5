@@ -10,7 +10,7 @@ function onCreate()
         close("Early indicator disabled")
         return
     end
-    
+
     configureExternalVars()
     earlyLateMSTime = getData('noteMs', earlyLateMSTime)
     createLatencyIndicator()
@@ -19,6 +19,7 @@ end
 function onCreatePost()
     funcReflect = getData('funcReflect', false)
 end
+
 -----------
 function createLatencyIndicator()
     -- You might want to tweak X and Y to your liking, but OLNY FIRST NUMBER
@@ -88,7 +89,7 @@ function round(x, n) --https://stackoverflow.com/questions/18313171/lua-rounding
     x = x * n
     if x >= 0 then x = math.floor(x + 0.5) else x = math.ceil(x - 0.5) end
     return x / n
-  end
+end
 
 -----
 function opponentNoteHit(id, noteData, noteType, isSustainNote)
@@ -100,5 +101,7 @@ function goodNoteHit(noteID, noteData, noteType, isSustainNote)
 end
 
 function getData(value, fallback)
-    return getDataFromSave('DdtoV2', value, fallback)
+    local item = getDataFromSave('DdtoV2', value, fallback)
+    if (item == nil) then return fallback end
+    return item
 end

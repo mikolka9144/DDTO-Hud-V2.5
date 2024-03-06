@@ -2,8 +2,8 @@
 local OpponentHasSplash = true --allows opponent splash?
 
 --options related to the splash (aplies in all song)--
-local customSplashSkin = false       --let's you have your custom splashes
-local isLibitina = false             --sets the splash into libitina version
+local customSplashSkin = false --let's you have your custom splashes
+local isLibitina = false       --sets the splash into libitina version
 
 --enables the old/psych splash (applies in all song)--
 local enablePsychSplashes = false --sets to the default old splashes
@@ -11,7 +11,7 @@ local enablePsychSystem = false   --if true makes the properties of the splash a
 
 --Mess with it if you want your own custom splash but customSplashSkin MUST be enabled--
 local splashPath = ''
-local splashTexture = 'noteSplashes' 
+local splashTexture = 'noteSplashes'
 local splashAnims = {}
 local splashOffset = {}
 local splashScale = 1
@@ -29,9 +29,8 @@ local usePixelSplash = false
 function onCreatePost()
   importSettings()
   isNewPsych = version:find('0.7')
-  PlayState = ( isNewPsych and 'states.PlayState' or 'PlayState')
+  PlayState = (isNewPsych and 'states.PlayState' or 'PlayState')
 end
-
 
 function goodNoteHit(noteIndex, noteDirection, noteType, isSustainNote)
   spawnSplash(noteIndex, noteDirection, noteType, isSustainNote, true);
@@ -131,11 +130,12 @@ function onUpdate()
       end
     end
   end
-
 end
+
 function refreshSplashes()
   usePixelSplash = getPropertyFromClass(PlayState, 'isPixelStage')
-  if customSplashSkin then return
+  if customSplashSkin then
+    return
   elseif isLibitina then
     splashTexture = 'libbie_Splash'
     splashAnims = { 'note splash purple 1', 'note splash blue 1', 'note splash green 1', 'note splash red 1' }

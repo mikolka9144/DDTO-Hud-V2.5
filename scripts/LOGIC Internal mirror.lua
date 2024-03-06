@@ -1,6 +1,6 @@
-local red = 1
-local green = 1
-local blue = 1
+red = 1
+green = 1
+blue = 1
 
 local keys = { "left", "down", "up", "right" }
 local bfHoldTimer = 0
@@ -12,9 +12,9 @@ function onCreatePost()
     close("No simple mirror")
     return
   end
+  luaDebugMode = false
   mirrorNotes()
 end
-
 
 function onUpdate(elapsed)
   if canHold then
@@ -56,19 +56,20 @@ function blueballDad(miss)
 end
 
 function noteMiss(id, noteData, noteType, isSustainNote)
-    animToPlay = getProperty('singAnimations')[noteData + 1]
-    char = 'dad'
-    if (getPropertyFromGroup('notes', id, 'noMissAnimation')) then
-      if checkAnimationExists(char, animToPlay, 'miss') then
-        playAnim(char, animToPlay .. 'miss', true)
-      else
-        blueballDad(true)
-        time = stepCrochet * (0.0011 / playbackRate) * getProperty('dad.singDuration')
-        runTimer("missRevert", time, 1)
-        playAnim(char, animToPlay, true)
-      end
+  animToPlay = getProperty('singAnimations')[noteData + 1]
+  char = 'dad'
+  debugPrint(getPropertyFromGroup('notes', id, 'noMissAnimation'))
+  if (getPropertyFromGroup('notes', id, 'noMissAnimation')) then
+    if checkAnimationExists(char, animToPlay, 'miss') then
+      playAnim(char, animToPlay .. 'miss', true)
+    else
+      blueballDad(true)
+      time = stepCrochet * (0.0011 / playbackRate) * getProperty('dad.singDuration')
+      runTimer("missRevert", time, 1)
+      playAnim(char, animToPlay, true)
     end
-    return Function_Stop
+  end
+  return Function_Stop
 end
 
 ---------------
@@ -89,10 +90,12 @@ end
 
 ---
 function checkAnimationExists(char, anim, suffix)
+  anim = 'anim'
+  if (version:find('0.7')) then anim = anim .. "ation" end
   if suffix == nil then
-    return runHaxeCode("game." .. char .. ".anim.exists('" .. anim .. "');")
+    return runHaxeCode("game." .. char .. "." .. anim .. ".exists('" .. anim .. "');")
   else
-    return runHaxeCode("game." .. char .. ".anim.exists('" .. anim .. "' + '" .. suffix .. "');")
+    return runHaxeCode("game." .. char .. "." .. anim .. ".exists('" .. anim .. "' + '" .. suffix .. "');")
   end
   --return runHaxeCode("game.]]..char..[[.animOffsets.exists(']]..anim..[[' + ']]..animSuffix..[[');")
 end
@@ -154,7 +157,7 @@ end
 ---------
 
 function goodNoteHit(membersIndex, noteData, noteType, isSustainNote)
-   noteHit("dad", noteData, noteType) 
+  noteHit("dad", noteData, noteType)
 end
 
 function opponentNoteHit(membersIndex, noteData, noteType, isSustainNote)

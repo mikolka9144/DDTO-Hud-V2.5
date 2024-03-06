@@ -70,28 +70,40 @@ function onCreate()
     options = {
         {"Allows you to play as the opponent","Mirror mode", "user_anyMirror", "bool",false},
         {"Should internal mirror scipt be used?","Built-in mirror script", "user_internalMirror", "bool",true},
+
         {"","DDTO HUD SETTINGS", "xxxxxac", "none"},
+
         {"Do you want to enable the judgement counter?","Judgement counter", "ddtoNoteCounter", "bool",true},
         {"Do you want to enable the lane underlay?","Lane Underlay", "ddtoUnderlay", "bool",true},
         {"Set the underlay on how transparent it is.","Underlay alpha", "ddtoUnderlayAlpha", "number", 0.3, 0, 1, 0.01},
         {"Do you want to display Early/Late indicator? ","Early/Late text", "noteDelay", "bool",true},
         {"Do you want to display raw ms time for Early/Late indicator?","Display note Delays in ms", "noteMs", "bool",true},
         {"Do you want to flip opponent icons in mirror mode?","Use alternative Hp bar", "alternativeHPBar", "bool",true},
+        {"What font will UI use","Main font", "UIFont", "string","Aller_rg.ttf",{"Aller_rg.ttf","Journal.ttf","Halogen.otf"}},
+        {"What font will Pixel UI use","Pixel font", "UIPixelFont", "string","vcr.ttf",{"vcr.ttf","DOS.ttf","CyberpunkWaifus.ttf"}},
+
         {"","NOTE HIT SETTINGS", "xxxxac", "none"},
+
         {"Do you want hitsounds?","Note Sounds", "hitSound", "bool",true},
         {"Do you want hitsound to depend on ratings","Judge Notes", "judgeHitSound", "bool",true},
-        {"How many judgements will have hitSounds: [sicks, goods, bads,shits]","Judge Notes Count", "judgeCount", "number", 1, 0.0, 4, 1},
+        {"How many judgements will have hitSounds","Judge Notes Rating", "judgeMinimum", "string","Sick",{"Sick","Good","Bad","Shit"}},
         {"Hitsound volume","Note Sound Volume", "hitSoundVolume", "number", 0.3, 0, 1, 0.01},
         {"Do you want oppent notes to splash on press?","Opponent Splashes","OpponentHasSplash","bool","true"},
         {"Do you want to disable custom splash system","Reverted splashes","enablePsychSystem","bool",false},
+
         {"","DDTO BAR SETTINGS", "xxxxxac", "none"},
+
         {"Do you want to replace score text with one from DDTO?","DDTO score", "customScoreBarText", "bool",true},
         {"Do you want to enable NPS?","NPS counter", "npsEnabled", "bool",true},
+
         {"","EXTERNAL MIRROR CONFIG","xcxcxcz","none"},
+
         {"Uses enemy callbacks for player enevts ","Reverse function calls","user_funcReflect","bool",false},
         {"Use enemy strum for player context","Reverse player strum","user_strumlineReflect","bool",false},
         {"Assumes player is treated as opponent in HP bar","Reverse HP bar","user_hpReflect","bool",false},
+
         {"","MISC","xszcxcxcz","none"},
+
         {"Do you want to enable coolGameplay?? lol ","COOL GAMEPLAY","coolGameplay","bool",false},
         {"Do you want to enable gfCountdown? (if your gf has one)","GF Countdown","gfCountdown","bool",false},
         {"Do you have skill issue in coding?","DEBUG", "debug", "bool",false}

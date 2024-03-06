@@ -1,5 +1,4 @@
 --[[
-
 CREDITS:
 Script Created By MinecraftBoy2038
 Modified By Zaxh#9092 (Made the script more accurate from the original ddto+ source code)
@@ -7,15 +6,15 @@ Graident Lua Timebar by Betopia#5677 (Fixed Character Change by Aaron ♡#0001, 
 PlayAsDad by Kevin Kuntz
 NPS logic made by beihu(北狐丶逐梦) https://b23.tv/gxqO0GH
 Lane overlay/underlay by Nox#5005
-Tweaked by Mikolka9144
 HUD Originated By DDTO+
 Please credit me if you are using this hud
-
 ]]
 
 -- SETTINGS --
-local customScoreBar = false 
+local customScoreBar = false
 local earlyLate = true
+local uiFont = "Aller_rg.ttf"
+local pixelFont = "vcr.ttf"
 -- CODE N SUCH --
 local funcReflect = false
 local isNewPsych = false
@@ -30,10 +29,12 @@ local bgY = nil
 --#region Funkin' LUA METHODS
 function onCreate()
   initSaveData('DdtoV2', 'psychengine/mikolka9144')
+  luaDebugMode = getData('debug', false)
   earlyLate = getData('noteDelay', earlyLate)
   customScoreBar = getData('customScoreBar', customScoreBar)
-  luaDebugMode = getData('debug', false)
-  
+  uiFont = getData('UIFont', uiFont)
+  pixelFont = getData('UIPixelFont', pixelFont)
+
   configureExternalVars()
 end
 
@@ -57,7 +58,6 @@ end
 function onUpdatePost(elapsed)
   botplaySine = botplaySine + 180 * elapsed
   setProperty('practiceTxt.alpha', 1 - math.sin(math.pi * botplaySine / 180))
-  --debugPrint(getTextString("practiceTxt"))
   setTimeBarTxt()
 end
 
@@ -75,7 +75,7 @@ function onEvent(name, value1, value2)
       setHudStyle(true)
     else
       setHudStyle(false)
-    end 
+    end
   end
 end
 
@@ -140,31 +140,30 @@ function setHudStyle(isPixel)
   setupMSText(isPixel)
   if luaTextExists("judgementCounter") then
     if isPixel then
-      setTextFont('judgementCounter', getFont('vcr'))
+      crawlFont('judgementCounter', 'pixel')
       setProperty('judgementCounter.y', 346 + (earlyLate and -58 or -31))
     else
-      setTextFont('judgementCounter', getFont())
+      crawlFont('judgementCounter', '')
       setProperty('judgementCounter.y', 346 + (earlyLate and -88 or -52))
     end
   end
   if luaTextExists('ddtoScoreTxt') then
-    setTextFont('ddtoScoreTxt', getFont(isPixel and 'vcr' or ''))
+    crawlFont('ddtoScoreTxt', isPixel and 'pixel' or '')
   end
   if isPixel then
-    setTextFont('scoreTxt', getFont('vcr'))
-    setTextFont('timeTxt', getFont('vcr'))
-    setTextFont('practiceTxt', getFont('vcr'))
+    crawlFont('scoreTxt', 'pixel')
+    crawlFont('timeTxt', 'pixel')
+    crawlFont('practiceTxt', 'pixel')
   else
-    setTextFont('scoreTxt', getFont())
-    setTextFont('timeTxt', getFont())
-    setTextFont('practiceTxt', getFont('riffic'))
+    crawlFont('scoreTxt', '')
+    crawlFont('timeTxt', '')
+    crawlFont('practiceTxt', 'riffic')
   end
-  
 end
 
 function setupMSText(isPixel)
   if not luaTextExists("latencyIndicator") then return end
-  setTextFont('latencyIndicator', getFont(isPixel and 'vcr' or'riffic'))
+  crawlFont('latencyIndicator', isPixel and 'vcr' or 'riffic')
   X = 40.0 - 90 + COMBO_OFFSET[1]
   Y = 60.0 - 80 - COMBO_OFFSET[2]
   if isPixel then Y = Y + 60 end
@@ -175,6 +174,8 @@ end
 
 function setupTimeBar(Yoffset)
   setTextSize('timeTxt', 18)
+  setTextWidth("timeTxt", 1000)
+  screenCenter("timeTxt", 'x')
   setTextBorder("timeTxt", 1, "000000")
   setProperty('timeTxt.y', getProperty(timeBarBG .. '.y') + Yoffset)
   if not isNewPsych then
@@ -185,7 +186,7 @@ end
 
 function configureExternalVars()
   isNewPsych = version:find('0.7')
-  
+
   if isNewPsych then
     noteSkin = getPropertyFromClass('backend.ClientPrefs', "data.noteSkin")
     if noteSkin:lower() == "doki" then
@@ -208,21 +209,23 @@ end
 function setTimeBarTxt()
   local barType = string.lower(timeBarType)
   if getProperty("timeTxt.alpha") == 0 or
-  inGameOver or -- this code fails to calculate "remaining time" in game over
-  barType == "disabled"
-  then return end
+      inGameOver or -- this code fails to calculate "remaining time" in game over
+      barType == "disabled"
+  then
+    return
+  end
 
   local barTxt = songName
   if playbackRate ~= 1 then
-    barTxt = barTxt.. ' (' .. playbackRate .. 'x)'
+    barTxt = barTxt .. ' (' .. playbackRate .. 'x)'
   end
   if barType == "time left" then
-      local remTime = formatTime(remainingTime())
-      barTxt = barTxt .. ' (' .. remTime .. ')'
-    elseif barType == "time elapsed" then
-      local totalTime = formatTime(getProperty('songLength'))
-      local elapsedTime = formatTime((getSongPosition() - noteOffset))
-      barTxt = barTxt..' ['..elapsedTime.." | "..totalTime..']'
+    local remTime = formatTime(remainingTime())
+    barTxt = barTxt .. ' (' .. remTime .. ')'
+  elseif barType == "time elapsed" then
+    local totalTime = formatTime(getProperty('songLength'))
+    local elapsedTime = formatTime((getSongPosition() - noteOffset))
+    barTxt = barTxt .. ' [' .. elapsedTime .. " | " .. totalTime .. ']'
   end
   setTextString('timeTxt', barTxt)
 end
@@ -232,11 +235,14 @@ end
 --#region UTILLS
 
 function getData(value, fallback)
-  return getDataFromSave('DdtoV2', value, fallback)
+  local item = getDataFromSave('DdtoV2', value, fallback)
+  if (item == nil) then return fallback end
+  return item
 end
 
-function opponentNoteHit(id, noteData, noteType, isSustainNote) 
-  if funcReflect and not isSustainNote then noteHit(id) end end
+function opponentNoteHit(id, noteData, noteType, isSustainNote)
+  if funcReflect and not isSustainNote then noteHit(id) end
+end
 
 function goodNoteHit(noteID, noteData, noteType, isSustainNote)
   if not funcReflect and not isSustainNote then noteHit(noteID) end
@@ -258,15 +264,24 @@ function remainingTime()
   return getProperty('songLength') - (getSongPosition() - noteOffset)
 end
 
-function getFont(type)
-  if type == 'aller' then
-    return 'Aller_Rg.ttf'
-  elseif type == 'riffic' then --
-    return 'riffic.ttf'
-  elseif type == 'vcr' then    --
-    return 'vcr.ttf'
+function crawlFont(objName, type)
+  local font = ""
+  if type == 'pixel' then
+    font = pixelFont
+  elseif type == 'riffic' then
+    font = 'riffic.ttf'
+  elseif type == 'vcr' then
+    font = 'vcr.ttf'
   else
-    return 'Aller_Rg.ttf'
+    font = uiFont
+  end
+  setTextFont(objName, font)
+
+  if (font == "Journal.ttf") then
+    setProperty(objName..".y", getProperty(objName..".y")-5)
+    setTextSize(objName, getTextSize(objName) + 6) -- For you Monika <3
+  elseif (font == "CyberpunkWaifus.ttf") then
+    setTextSize(objName, getTextSize(objName) + 5)
   end
 end
 
