@@ -41,6 +41,9 @@ function opponentNoteHit(noteIndex, noteDirection, noteType, isSustainNote)
 end
 
 function spawnSplash(noteIndex, noteDirection, noteType, isSustainNote, isPlayerSplash)
+  if getPropertyFromGroup('unspawnNotes', noteIndex, 'eventVal1') == "REPEAT_NOTE" 
+  then return end
+
   if reverseSplashes then
     isPlayerSplash = not isPlayerSplash
   end

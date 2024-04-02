@@ -1,8 +1,8 @@
-local countdownstarted = false
 local selection = 1
 local chosenterm = 1
 local curPage = 1
 
+IsNewPsych = false
 OPTION_SIZE = 12
 xPos = 0
 SET_DESC_INDEX=1
@@ -61,8 +61,8 @@ function mysplit(inputstr, sep)
 end
 
 
-function onCreate()
-
+function onCreate() 
+    IsNewPsych = version:find('0.7')
     initSaveData('DdtoV2', 'psychengine/mikolka9144')
     precacheSound('scrollMenu')
     precacheMusic('options')
@@ -79,7 +79,7 @@ function onCreate()
         {"Do you want to display Early/Late indicator? ","Early/Late text", "noteDelay", "bool",true},
         {"Do you want to display raw ms time for Early/Late indicator?","Display note Delays in ms", "noteMs", "bool",true},
         {"Do you want to flip opponent icons in mirror mode?","Use alternative Hp bar", "alternativeHPBar", "bool",true},
-        {"What font will UI use","Main font", "UIFont", "string","Aller_rg.ttf",{"Aller_rg.ttf","Journal.ttf","Halogen.otf"}},
+        {"What font will UI use","Main font", "UIFont", "string","Aller.ttf",{"Aller_rg.ttf","Journal.ttf","Halogen.otf"}},
         {"What font will Pixel UI use","Pixel font", "UIPixelFont", "string","vcr.ttf",{"vcr.ttf","DOS.ttf","CyberpunkWaifus.ttf"}},
 
         {"","NOTE HIT SETTINGS", "xxxxac", "none"},
@@ -119,7 +119,6 @@ function onCreate()
     end
 	shownoptions = tableslice(options, 1, OPTION_SIZE)
 
-    setProperty('healthBarBG.visible', false)
     makeLuaSprite('bg', "bg", xPos, 0)
     setObjectCamera('bg', 'hud')
     addLuaSprite('bg', true)
@@ -168,6 +167,10 @@ function onCreate()
 end
 
 function onStartCountdown()
+    setProperty('healthBarBG.visible', false)
+    setProperty('healthBar.visible', false)
+    setProperty('iconP1.visible', false)
+    setProperty('iconP2.visible', false)
     return Function_Stop
 end
 
@@ -214,27 +217,34 @@ function scrollBg(delta)
         setProperty("bg.y", -xPos)
 end
 function onUpdate(elapsed)
-    
-    if countdownstarted == false then
+        setProperty("kade.visible", false)
+        setProperty("practiceTxt.visible", false)
         scrollBg(elapsed)
 
-        if keyJustPressed('accept') then
+        if keyJustPressed('back') or keyJustPressed("space") then
+            playSound("cancelMenu")
             exitSettings()
         end
 
-        if keyJustPressed('right') then
+        if keyJustPressed('right') or getUIkey("right") or keyJustPressed('accept') then
             changeOptionType(1)
         end
-        if keyJustPressed('left') then
+        if keyJustPressed('left') or getUIkey("left") then
             changeOptionType(-1)
         end
-        if keyJustPressed('down') then
+        if keyJustPressed('down') or getUIkey("down") then
             changeSelection(1)
         end
-        if keyJustPressed('up') then
+        if keyJustPressed('up') or getUIkey("up") then
             changeSelection(-1)
         end
+end
 
+function getUIkey(key)
+    if IsNewPsych then
+        return keyJustPressed("ui_"..key)
+    else
+        return runHaxeCode("game.getControl('UI_"..string.upper(key).."_P')")
     end
 end
 

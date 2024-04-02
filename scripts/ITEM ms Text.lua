@@ -36,6 +36,9 @@ end
 ------------
 
 function noteHit(noteID)
+    if getPropertyFromGroup('unspawnNotes', noteID, 'eventVal1') == "REPEAT_NOTE" 
+    then return end
+
     local msTime = (getSongPosition() - getPropertyFromGroup('notes', noteID, 'strumTime')) - RATING_OFFSET
     local rating = getPropertyFromGroup('notes', noteID, 'rating')
 

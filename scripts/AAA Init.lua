@@ -10,6 +10,7 @@ local RATING_OFFSET = 0
 
 function onCreate()
   initSaveData('DdtoV2', 'psychengine/mikolka9144')
+  luaDebugMode = getData('debug', false)
   isNewPsych = version:find('0.7')
 
   alternativeHPBar = getData('alternativeHPBar', false)
@@ -19,27 +20,40 @@ function onCreate()
   local user_strumlineReflect = getData('user_strumlineReflect', false)
   local user_hpReflect = getData('user_hpReflect', false)
 
-  for i = 1, #onlyBFSongs do
-    if songName == onlyBFSongs[i] then
-      user_anyMirror = false
+  if UMMversion ~= nil then 
+    if leftSide == true then
+      setData('complexMirror', false)
+      setData('internalMirror', false)
+      setData('anyMirror', true)
+      user_funcReflect = true
+      user_hpReflect = true
+      user_strumlineReflect = true
+    else
+      setData('anyMirror', false)
+      user_funcReflect = false
+      user_hpReflect = false
+      user_strumlineReflect = false
+    end
+  else
+    for i = 1, #onlyBFSongs do
+      if songName == onlyBFSongs[i] then
+        user_anyMirror = false
+      end
+    end
+  
+    setData('internalMirror', user_anyMirror and user_internalMirror or false)
+    setData('anyMirror', user_anyMirror)
+    
+    if (not user_internalMirror) and user_anyMirror then
+      setData('complexMirror', true)
+    else
+      setData('complexMirror', false)
+      user_funcReflect = false
+      user_hpReflect = false
+      user_strumlineReflect = false
     end
   end
 
-  setData('internalMirror', user_anyMirror and user_internalMirror or false)
-  setData('anyMirror', user_anyMirror)
-  if leftSide == true then
-    setData('complexMirror', false)
-    user_funcReflect = true
-    user_hpReflect = true
-    user_strumlineReflect = true
-  elseif (not user_internalMirror) and user_anyMirror then
-    setData('complexMirror', true)
-  else
-    setData('complexMirror', false)
-    user_funcReflect = false
-    user_hpReflect = false
-    user_strumlineReflect = false
-  end
   if isNewPsych then
     setHaxeVars()
     RATING_OFFSET = getPropertyFromClass('backend.ClientPrefs', 'data.ratingOffset')

@@ -98,7 +98,7 @@ end
 
 function configureExternalVars()
     initSaveData('DdtoV2', 'psychengine/mikolka9144')
-    EarlyLate = getData('noteDelay', earlyLate)
+    EarlyLate = getData('noteDelay', false)
     local isNewPsych = version:find('0.7')
 
     JudgementNameTable = isNewPsych

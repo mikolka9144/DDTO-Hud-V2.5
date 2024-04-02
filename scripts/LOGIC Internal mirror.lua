@@ -2,21 +2,24 @@ red = 1
 green = 1
 blue = 1
 
+
+local enabled = true
 local keys = { "left", "down", "up", "right" }
 local bfHoldTimer = 0
 local canHold = false
 local holdKey = ""
 
 function onCreatePost()
-  if not getDataFromSave('DdtoV2', 'internalMirror') then
-    close("No simple mirror")
-    return
+  if not getDataFromSave('DdtoV2', 'internalMirror') or not getDataFromSave('DdtoV2', 'anyMirror') then
+    close()
+    enabled = false
+    return 
   end
-  luaDebugMode = false
   mirrorNotes()
 end
 
 function onUpdate(elapsed)
+  if not enabled then return end
   if canHold then
     if keyPressed(holdKey) then
       bfHoldTimer = bfHoldTimer + elapsed
@@ -58,7 +61,7 @@ end
 function noteMiss(id, noteData, noteType, isSustainNote)
   animToPlay = getProperty('singAnimations')[noteData + 1]
   char = 'dad'
-  debugPrint(getPropertyFromGroup('notes', id, 'noMissAnimation'))
+  --debugPrint(getPropertyFromGroup('notes', id, 'noMissAnimation'))
   if (getPropertyFromGroup('notes', id, 'noMissAnimation')) then
     if checkAnimationExists(char, animToPlay, 'miss') then
       playAnim(char, animToPlay .. 'miss', true)
@@ -97,10 +100,11 @@ function checkAnimationExists(char, anim, suffix)
   else
     return runHaxeCode("game." .. char .. "." .. anim .. ".exists('" .. anim .. "' + '" .. suffix .. "');")
   end
-  --return runHaxeCode("game.]]..char..[[.animOffsets.exists(']]..anim..[[' + ']]..animSuffix..[[');")
 end
 
-function noteHit(char, noteData, noteType)
+function noteHit(char, noteData, noteType,a,b)
+  if getPropertyFromGroup('unspawnNotes', a, 'eventVal1') == "REPEAT_NOTE" 
+  then return end
   animToPlay = getProperty('singAnimations')[noteData + 1]
   blueballDad(false)
 
@@ -112,27 +116,22 @@ function noteHit(char, noteData, noteType)
   if noteType == 'GF Sing' then
     playAnim('gf', animToPlay, true)
     char = 'gf'
-  end
 
-  if noteType == 'Hey!' then
+  elseif noteType == 'Hey!' then
     playAnim(char, 'hey', true)
     setProperty(char .. '.specialAnim', true)
     setProperty(char .. '.heyTimer', 0.6)
-  end
 
-  if noteType == 'Alt Animation' then
+  elseif noteType == 'Alt Animation' then
     if checkAnimationExists(char, animToPlay, '-alt') then
       playAnim(char, animToPlay .. '-alt', true)
     else
       playAnim(char, animToPlay, true)
     end
-  end
 
-  if noteType == 'No Animation' then
+  elseif noteType == 'No Animation' then
     playAnim(char, 'idle')
-  end
-
-  if noteType == '' then
+  else 
     if altAnim then
       if checkAnimationExists(char, animToPlay, '-alt') then
         playAnim(char, animToPlay .. '-alt', true)
@@ -142,9 +141,16 @@ function noteHit(char, noteData, noteType)
     else
       playAnim(char, animToPlay, true)
     end
+
+    if noteType ~= '' then 
+      setPropertyFromGroup('unspawnNotes', a, 'eventVal1', "REPEAT_NOTE")
+      if char == 'boyfriend' then
+        callOnLuas('goodNoteHit', {a, noteData, noteType, b}, true,false,{},{})
+      else
+        callOnLuas('opponentNoteHit', {a, noteData, noteType, b}, true,false,{},{})
+      end
+    end 
   end
-
-
 
   if char == "dad" then
     canHold = true
@@ -157,9 +163,11 @@ end
 ---------
 
 function goodNoteHit(membersIndex, noteData, noteType, isSustainNote)
-  noteHit("dad", noteData, noteType)
+  if not enabled then return end
+  noteHit("dad", noteData, noteType,membersIndex,isSustainNote)
 end
 
 function opponentNoteHit(membersIndex, noteData, noteType, isSustainNote)
-  noteHit("boyfriend", noteData, noteType)
+  if not enabled then return end
+  noteHit("boyfriend", noteData, noteType,membersIndex,isSustainNote)
 end
