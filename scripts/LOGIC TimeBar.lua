@@ -9,7 +9,7 @@ function onCreatePost()
     isNewPsych = version:find('0.7')
     BG = isNewPsych and "timeBar" or "timeBarBG"
     runHaxeCode('game.' .. BG .. '.kill();')
-    debugPrint(BG)
+
     makeTimeBarBG()
     if not isNewPsych then
         setObjectOrder('timeBar', getObjectOrder('timeBarBack') + 1)

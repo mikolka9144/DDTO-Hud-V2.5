@@ -13,12 +13,15 @@ Please credit me if you are using this hud
 -- SETTINGS --
 local customScoreBar = false
 local earlyLate = true
-local uiFont = "Aller_rg.ttf"
+local uiFont = "Aller.ttf"
 local pixelFont = "vcr.ttf"
 -- CODE N SUCH --
 local funcReflect = false
 local isNewPsych = false
+local isAnyMirror = false
+local isUMM = false
 local botplaySine = 0
+local allowTextResizing = false
 -- Psych Constants --
 local IS_PIXEL = false
 local COMBO_OFFSET = nil
@@ -29,7 +32,8 @@ local bgY = nil
 --#region Funkin' LUA METHODS
 function onCreate()
   initSaveData('DdtoV2', 'psychengine/mikolka9144')
-  luaDebugMode = getData('debug', false)
+  
+  isAnyMirror = getData('anyMirror', false)
   earlyLate = getData('noteDelay', earlyLate)
   customScoreBar = getData('customScoreBar', customScoreBar)
   uiFont = getData('UIFont', uiFont)
@@ -46,7 +50,11 @@ function onCreatePost()
   end
   setupTimeBar(downscroll and 4 or -17)
   makePracticeText()
+  makeKadeWatermark()
+  
+  allowTextResizing = true
   setHudStyle(IS_PIXEL)
+  allowTextResizing = false
   runHaxeCode('game.botplayTxt.kill();')
 end
 
@@ -107,7 +115,19 @@ function makePracticeText()
 
   setProperty('practiceTxt.y', defaultPlayerStrumY0 + 30)
 end
-
+function makeKadeWatermark()
+  
+  local kadeTxt = isUMM 
+  and songName.." "..difficultyName.." - UMM "..UMMversion.." ("..version..")"
+  or songName.." "..difficultyName.." - PE "..version
+  makeLuaText('kade', kadeTxt, 0, 0)
+  setTextSize('kade', 16)
+  setProperty("kade.x", 2)
+  setProperty("kade.antialiasing", false)
+  setProperty("kade.y", screenHeight-(10+15))
+  setTextBorder('kade', 1, '000000')
+  addLuaText('kade')
+end
 --#endregion
 
 --#region LOGIC METHODS
@@ -164,8 +184,11 @@ end
 function setupMSText(isPixel)
   if not luaTextExists("latencyIndicator") then return end
   crawlFont('latencyIndicator', isPixel and 'vcr' or 'riffic')
-  X = 40.0 - 90 + COMBO_OFFSET[1]
-  Y = 60.0 - 80 - COMBO_OFFSET[2]
+  indexOff = (isUMM and isAnyMirror) and 4 or 0
+  X = 40.0 - 90 + COMBO_OFFSET[1+indexOff]
+  Y = 60.0 - 80 - COMBO_OFFSET[2+indexOff]
+
+  if isUMM then X=X+(isAnyMirror and -90 or (90*6) ) end
   if isPixel then Y = Y + 60 end
   screenCenter("latencyIndicator", 'xy')
   setProperty("latencyIndicator.x", getProperty("latencyIndicator.x") + X)
@@ -186,6 +209,7 @@ end
 
 function configureExternalVars()
   isNewPsych = version:find('0.7')
+  isUMM = UMMversion ~= nil
 
   if isNewPsych then
     noteSkin = getPropertyFromClass('backend.ClientPrefs', "data.noteSkin")
@@ -276,6 +300,7 @@ function crawlFont(objName, type)
     font = uiFont
   end
   setTextFont(objName, font)
+  if not allowTextResizing then return end
 
   if (font == "Journal.ttf") then
     setProperty(objName..".y", getProperty(objName..".y")-5)

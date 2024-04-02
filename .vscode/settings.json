@@ -71,6 +71,11 @@
         "setVar",
         "setDataFromSave",
         "noteOffset",
-        "getTextString"
+        "getTextString",
+        "triggerEvent",
+        "makeGraphic",
+        "misses",
+        "score",
+        "screenHeight"
     ]
 }

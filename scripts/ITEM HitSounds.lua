@@ -36,6 +36,9 @@ end
 
 ----------
 function noteHit(noteID, noteData, noteType, isSustainNote)
+  if getPropertyFromGroup('unspawnNotes', noteID, 'eventVal1') == "REPEAT_NOTE" 
+    then return end
+    
   rating = getPropertyFromGroup('notes', noteID, 'rating') -- TODO
   if not isSustainNote then
     if not judgeHitSound then
